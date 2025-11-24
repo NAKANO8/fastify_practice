@@ -1,19 +1,59 @@
-import { prisma } from '../lib/prisma.js'  // ESMでは .js 必須
+import { prisma } from '../lib/prisma.js'
 
 async function main() {
-  // Create a new user
-  const user = await prisma.users.create({
+  // ======================
+  // CREATE: ユーザー作成
+  // ======================
+  const createdUser = await prisma.users.create({
     data: {
       username: "Alice",
     },
   })
-  console.log('Created user:', user)
+  console.log("Created:", createdUser)
 
-  // Fetch all users
+  // ======================
+  // FIND MANY: 全件取得
+  // ======================
   const allUsers = await prisma.users.findMany()
-  console.log('All users:', JSON.stringify(allUsers, null, 2))
-}
+  console.log("All Users:", allUsers)
 
+  // ======================
+  // FIND UNIQUE: 1件取得
+  // ======================
+  const oneUser = await prisma.users.findUnique({
+    where: {
+      id: createdUser.id,
+    },
+  })
+  console.log("One User:", oneUser)
+
+  // ======================
+  // UPDATE: 更新
+  // ======================
+  const updated = await prisma.users.update({
+    where: { id: createdUser.id },
+    data: {
+      username: "AliceUpdated",
+    },
+  })
+  console.log("Updated:", updated)
+
+  // ======================
+  // DELETE: 削除
+  // ======================
+  const deleted = await prisma.users.delete({
+    where: {
+      id: createdUser.id,
+    },
+  })
+  console.log("Deleted:", deleted)
+
+  // ======================
+  // 確認のための最終一覧
+  // ======================
+  const afterDelete = await prisma.users.findMany()
+  console.log("After Delete:", afterDelete)
+}
 main()
   .then(async () => {
     await prisma.$disconnect()
@@ -23,4 +63,3 @@ main()
     await prisma.$disconnect()
     process.exit(1)
   })
-
