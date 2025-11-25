@@ -5,8 +5,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx src/server.ts",
+    "test": "NODE_ENV=test vitest",
+    "test:run": "vitest run",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -25,8 +26,9 @@
     "@types/node": "^24.10.1",
     "@types/pg": "^8.15.6",
     "prisma": "^7.0.0",
+    "supertest": "^7.1.4",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.13"
   }
 }
-

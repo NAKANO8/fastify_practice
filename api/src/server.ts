@@ -1,73 +1,78 @@
 import Fastify from "fastify";
 import { prisma } from "../lib/prisma.js"; // ESMなので .js 必須
 
-const fastify = Fastify({
-  logger: true,
-});
-
-// ---------------------------
-// POST /users
-// ---------------------------
-fastify.post("/users", async (req, reply) => {
-  const { username } = req.body as { username: string };
-
-  const user = await prisma.users.create({
-    data: { username },
+export function buildApp() {
+  const fastify = Fastify({
+    logger: true,
   });
 
-  return user;
-});
+  // ---------------------------
+  // POST /users
+  // ---------------------------
+  fastify.post("/users", async (req, reply) => {
+    const { username } = req.body as { username: string };
 
-// ---------------------------
-// GET /users （全件）
-// ---------------------------
-fastify.get("/users", async () => {
-  return await prisma.users.findMany({
-    orderBy: {
-      id: "asc",
-    },
+    const user = await prisma.users.create({
+      data: { username },
+    });
+
+    return user;
   });
-});
 
-// ---------------------------
-// GET /users/:id （1件取得）
-// ---------------------------
-fastify.get("/users/:id", async (req) => {
-  const { id } = req.params as { id: string };
-
-  return await prisma.users.findUnique({
-    where: { id: Number(id) },
+  // ---------------------------
+  // GET /users （全件）
+  // ---------------------------
+  fastify.get("/users", async () => {
+    return await prisma.users.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
   });
-});
 
-// ---------------------------
-// PUT /users/:id （更新）
-// ---------------------------
-fastify.put("/users/:id", async (req) => {
-  const { id } = req.params as { id: string };
-  const { username } = req.body as { username: string };
+  // ---------------------------
+  // GET /users/:id （1件取得）
+  // ---------------------------
+  fastify.get("/users/:id", async (req) => {
+    const { id } = req.params as { id: string };
 
-  return await prisma.users.update({
-    where: { id: Number(id) },
-    data: { username },
+    return await prisma.users.findUnique({
+      where: { id: Number(id) },
+    });
   });
-});
 
-// ---------------------------
-// DELETE /users/:id
-// ---------------------------
-fastify.delete("/users/:id", async (req) => {
-  const { id } = req.params as { id: string };
+  // ---------------------------
+  // PUT /users/:id （更新）
+  // ---------------------------
+  fastify.put("/users/:id", async (req) => {
+    const { id } = req.params as { id: string };
+    const { username } = req.body as { username: string };
 
-  return await prisma.users.delete({
-    where: { id: Number(id) },
+    return await prisma.users.update({
+      where: { id: Number(id) },
+      data: { username },
+    });
   });
-});
 
+  // ---------------------------
+  // DELETE /users/:id
+  // ---------------------------
+  fastify.delete("/users/:id", async (req) => {
+    const { id } = req.params as { id: string };
+
+    return await prisma.users.delete({
+      where: { id: Number(id) },
+    });
+  });
+  return fastify;
+}
 // ---------------------------
-// 起動
+// 開発や本番だけ listen() する
 // ---------------------------
-fastify.listen({ port: 3000 }).then(() => {
-  console.log("🚀 Server running at http://localhost:3000");
-});
+if (process.env.NODE_ENV !== "test") {
+  const app = buildApp();
+  app.listen({ port: 3000 }).then(() => {
+    console.log("🚀 Server running at http://localhost:3000");
+  });
+}
 

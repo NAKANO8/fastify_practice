@@ -1,17 +1,13 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2023",
-
-    "strict": true,
+    "allowJs": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
-
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "test", "types"]
 }
 
